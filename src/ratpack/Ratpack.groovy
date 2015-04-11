@@ -1,5 +1,5 @@
-import org.pac4j.oauth.client.TwitterClient
-import org.pac4j.oauth.profile.twitter.TwitterProfile
+import org.pac4j.oauth.client.GitHubClient
+import org.pac4j.oauth.profile.github.GitHubProfile
 import ratpack.handling.Context
 import ratpack.pac4j.Pac4jModule
 import ratpack.session.SessionModule
@@ -16,13 +16,14 @@ ratpack {
 		String secret =""
 		add SessionModule
 		add new MapSessionsModule(1000, 360)
-		add new Pac4jModule(new TwitterClient(key, secret), new SecureAllAuthorizer())
+		add new Pac4jModule(new GitHubClient(key, secret), new SecureAllAuthorizer())
 	}
 
 	handlers {
 		handler {
-			TwitterProfile profile = getUserProfile(context)
-			render "Hello ${profile.username}"
+			GitHubProfile profile = getUserProfile(context)
+
+			render "Hello ${profile.username} you have ${profile.followers} followers and are using ${profile.diskUsage} Disk"
 		}
 	}
 }
@@ -31,6 +32,6 @@ ratpack {
 
 
 //Available by extending Pac4jProfileHandler
-protected TwitterProfile getUserProfile(Context context) {
-	return (TwitterProfile)((SessionStorage)context.getRequest().get(SessionStorage.class)).get("ratpack.pac4j-user-profile");
+protected GitHubProfile getUserProfile(Context context) {
+	return (GitHubProfile)((SessionStorage)context.getRequest().get(SessionStorage.class)).get("ratpack.pac4j-user-profile");
 }
